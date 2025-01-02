@@ -24,13 +24,14 @@ jobs:
           command: |
             ANDROID_SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
             SDK_DIR="$HOME/android-sdk"
-            mkdir -p "$SDK_DIR/cmdline-tools"
-            cd "$SDK_DIR/cmdline-tools"
-            if [ ! -d "latest" ]; then
+            mkdir -p "$SDK_DIR/cmdline-tools/latest"
+            cd "$SDK_DIR/cmdline-tools/latest"
+            if [ ! -f "bin/sdkmanager" ]; then
               echo "Downloading Android SDK command line tools..."
               curl -o sdk-tools.zip $ANDROID_SDK_URL
-              unzip sdk-tools.zip -d latest
+              unzip sdk-tools.zip
               rm sdk-tools.zip
+              chmod +x bin/*
             else
               echo "Android SDK command line tools already installed."
             fi
