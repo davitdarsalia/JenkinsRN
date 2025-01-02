@@ -19,6 +19,21 @@ jobs:
              else
                echo "JDK 17 is already installed."
              fi
+      - run:
+          name: Install Android SDK
+          command: |
+            ANDROID_SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
+            SDK_DIR="$HOME/android-sdk"
+            mkdir -p "$SDK_DIR/cmdline-tools"
+            cd "$SDK_DIR/cmdline-tools"
+            if [ ! -d "latest" ]; then
+              echo "Downloading Android SDK command line tools..."
+              curl -o sdk-tools.zip $ANDROID_SDK_URL
+              unzip sdk-tools.zip -d latest
+              rm sdk-tools.zip
+            else
+              echo "Android SDK command line tools already installed."
+            fi
 
 workflows:
   android:
