@@ -1,5 +1,10 @@
 version: 2.1
 
+executors:
+  ios-executor:
+    macos:
+      xcode: 16.0.0
+
 jobs:
   react-native-android-setup:
     docker:
@@ -70,13 +75,58 @@ jobs:
           command: |
             echo "$BUILD_KEYSTORE_FILE_64" | base64 --decode > android/app/debug.keystore
             bundle exec fastlane android betaAndroid
-
       - store_artifacts:
           name: Save Debug APK
           path: android/app/build/outputs/apk/release/app-release.apk
           destination: release-apk
 
+  react-native-ios-setup:
+    executor: ios-executor
+
+    environment:
+      YARN_CACHE_KEY: yarn-packages-{{ checksum "yarn.lock" }}
+      GEM_CACHE_KEY: gem-cache-{{ checksum "Gemfile.lock" }}
+
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+            - yarn-packages-
+      - run:
+          name: Install Yarn Dependencies
+          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - restore_cache:
+          name: Restore Gem Cache
+          keys:
+            - gem-cache-{{ checksum "Gemfile.lock" }}
+            - gem-cache-
+      - run:
+          name: Install Gems
+          command: bundle install --path vendor/bundle
+      - save_cache:
+          name: Save Gem Cache
+          key: gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Install CocoaPods Dependencies
+          command: |
+            cd ios
+            bundle exec pod install
+      - store_artifacts:
+          name: CocoaPods Logs
+          path: ios/Podfile.lock
+          destination: ios-pods
+
 workflows:
-  android:
+  android_ios:
     jobs:
       - react-native-android-setup
+      - react-native-ios-setup
