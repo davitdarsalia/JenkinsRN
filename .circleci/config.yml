@@ -108,6 +108,10 @@ jobs:
             - gem-cache-{{ checksum "Gemfile.lock" }}
             - gem-cache-
       - run:
+          name: Ensure Correct Bundler Version
+          command: |
+            gem install bundler --no-document -v 2.4.10
+      - run:
           name: Install Gems
           command: bundle install --path vendor/bundle
       - save_cache:
