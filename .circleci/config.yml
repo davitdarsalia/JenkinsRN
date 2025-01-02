@@ -89,6 +89,8 @@ jobs:
       - run:
           name: Install CocoaPods Dependencies
           command: |
+            gem uninstall bundler 
+            gem install bundler -v 1.17.3
             cd ios
             bundle exec pod install
       - store_artifacts:
