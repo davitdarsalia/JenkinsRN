@@ -32,8 +32,11 @@ commands:
             - gem-cache-{{ checksum "Gemfile.lock" }}
             - gem-cache-
       - run:
+          name: 'Install Bundler'
+          command: gem install bundler -v 2.5.18
+      - run:
           name: Install Gems
-          command: bundler _2.5.18_ install --path vendor/bundle
+          command: bundler install --path vendor/bundle
       - save_cache:
           name: Save Gem Cache
           key: gem-cache-{{ checksum "Gemfile.lock" }}
@@ -86,19 +89,21 @@ jobs:
     executor: ios-executor
     steps:
       - setup-environment
-      - run:
-          name: 'Install Bundler'
-          command: gem install bundler -v 2.5.18
+      - restore_cache:
+          name: Restore Pods Cache
+          keys:
+            - pod-packages-{{ checksum "ios/Podfile.lock" }}
+            - pod-packages-
+
       - run:
           name: Install CocoaPods Dependencies
           command: |
             cd ios
             bundle exec pod install
-
-      - store_artifacts:
-          name: CocoaPods Logs
-          path: ios/Podfile.lock
-          destination: ios-pods
+      - save_cache:
+          name: Save Pods as Cache
+          key: pod-packages-{{ checksum "ios/Podfile.lock" }}
+          paths: ios/Pods
 
 workflows:
   android_ios:
