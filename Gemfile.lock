@@ -161,6 +161,7 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.4.0)
       xcpretty-travis-formatter (>= 0.0.3, < 2.0.0)
+    fastlane-plugin-android_versioning (0.5.5)
     fastlane-sirp (1.0.0)
       sysrandom (~> 1.0)
     ffi (1.17.0)
@@ -285,6 +286,7 @@ DEPENDENCIES
   activesupport (>= 6.1.7.5, != 7.1.0)
   cocoapods (>= 1.13, != 1.15.1, != 1.15.0)
   fastlane
+  fastlane-plugin-android_versioning
 
 RUBY VERSION
    ruby 2.6.10p210
