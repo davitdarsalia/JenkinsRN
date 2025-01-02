@@ -13,16 +13,39 @@ platform :android do
   end
 
   desc "Runs all the tests"
-  lane :test do
+  lane :debugAPK do
+    gradle(
+      task: "test",
+      project_dir: "android"
+    )
+  end
+
+  lane :releaseAPK do
     gradle(
       task: "release",
       project_dir: "android"
     )
   end
 
-  desc "Increment version, run tests, and build beta"
+    lane :releaseAAB do
+    gradle(
+      task: "bundle",
+      project_dir: "android"
+    )
+  end
+
   lane :betaAndroid do
     increment
-    test
+    debugAPK
+  end
+
+  lane :releaseAndroid do
+    increment
+    releaseAPK
+  end
+
+   lane :releaseStore do
+    increment
+    releaseAAB
   end
 end

@@ -61,10 +61,16 @@ jobs:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
       - run:
-          name: Assemble Debug APK
+          name: Assemble Release APK
           command: |
             echo "$BUILD_KEYSTORE_FILE_64" | base64 --decode > android/app/release.keystore
+            bundle exec fastlane android releaseAndroid
+      - run:
+          name: Assemble Debug APK
+          command: |
+            echo "$BUILD_KEYSTORE_FILE_64" | base64 --decode > android/app/debug.keystore
             bundle exec fastlane android betaAndroid
+
       - store_artifacts:
           name: Save Debug APK
           path: android/app/build/outputs/apk/release/app-release.apk
