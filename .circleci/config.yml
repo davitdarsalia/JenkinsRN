@@ -1,9 +1,9 @@
 version: 2.1
 
 jobs:
-  checkout-code:
+  android:
     docker:
-      - image: cimg/base:current
+      - image: reactnativecommunity/react-native-android:latest # Preconfigured image
 
     steps:
       - checkout
@@ -11,43 +11,14 @@ jobs:
           name: Latest commit from Main branch
           command: git pull && git fetch
       - run:
-          name: Check and Install JDK 17
+          name: Verify Environment Setup
           command: |
-            if ! java -version 2>&1 | grep -q "17"; then
-               echo "Installing JDK 17..."
-               sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
-             else
-               echo "JDK 17 is already installed."
-             fi
-      - run:
-          name: Install Android SDK
-          command: |
-            ANDROID_SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
-            SDK_DIR="$HOME/android-sdk"
-            mkdir -p "$SDK_DIR/cmdline-tools/latest"
-            cd "$SDK_DIR/cmdline-tools/latest"
-            if [ ! -f "bin/sdkmanager" ]; then
-              echo "Downloading Android SDK command line tools..."
-              curl -o sdk-tools.zip $ANDROID_SDK_URL
-              unzip sdk-tools.zip
-              rm sdk-tools.zip
-              chmod +x bin/*
-            else
-              echo "Android SDK command line tools already installed."
-            fi
-      - run:
-          name: Set ENV variables
-          command: |
-            export ANDROID_HOME="$HOME/android-sdk"
-             export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-             echo 'export ANDROID_HOME="$HOME/android-sdk"' >> $BASH_ENV
-             echo 'export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"' >> $BASH_ENV
-
-            echo "ANDROID_HOME is set to $ANDROID_HOME"
-            echo "PATH includes Android SDK tools"
-            sdkmanager --list || echo "SDK tools not yet initialized, but environment is set up."
+            java -version
+            echo "JAVA_HOME is $JAVA_HOME"
+            echo "ANDROID_HOME is $ANDROID_HOME"
+            sdkmanager --list || echo "SDK tools are ready for use."
 
 workflows:
   android:
     jobs:
-      - checkout-code
+      - android
