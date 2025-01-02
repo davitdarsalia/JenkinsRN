@@ -33,6 +33,14 @@ jobs:
           key: gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+      - run:
+          name: Run Unit Tests
+          command: |
+            mkdir -p test-reports
+            yarn test --outputFile=test-reports/test-results.json --json
+      - store_artifacts:
+          name: Save Test Report
+          path: test-reports/test-results.json
 
 workflows:
   android:
