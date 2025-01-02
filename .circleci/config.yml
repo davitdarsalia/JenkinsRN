@@ -60,6 +60,11 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+      - run:
+          name: Assemble Debug APK
+          command: |
+            cd android
+            ./gradlew assembleDebug
 
 workflows:
   android:
