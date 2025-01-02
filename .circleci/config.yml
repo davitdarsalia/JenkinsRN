@@ -10,6 +10,15 @@ jobs:
       - run:
           name: Latest commit from Main branch
           command: git pull && git fetch
+      - run:
+          name: Check and Install JDK 17
+          command: |
+            if ! java -version 2>&1 | grep -q "17"; then
+               echo "Installing JDK 17..."
+               sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
+             else
+               echo "JDK 17 is already installed."
+             fi
 
 workflows:
   android:
