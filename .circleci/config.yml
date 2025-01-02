@@ -3,10 +3,15 @@ version: 2.1
 jobs:
   react-native-android-setup:
     docker:
-      - image: reactnativecommunity/react-native-android:latest
+      - image: reactnativecommunity/react-native-android:latest # Docker image for the job
 
     steps:
-      - checkout # Ensure code is checked out before caching steps
+      - setup_remote_docker: # Enables remote Docker for layer caching
+          version: 20.10.16
+      - run:
+          name: Pre-pull Docker Image
+          command: docker pull reactnativecommunity/react-native-android:latest
+      - checkout
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
