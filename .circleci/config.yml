@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  android:
+  react-native-android-setup:
     docker:
       - image: reactnativecommunity/react-native-android:latest # Preconfigured image
 
@@ -21,4 +21,4 @@ jobs:
 workflows:
   android:
     jobs:
-      - android
+      - react-native-android-setup
