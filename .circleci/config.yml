@@ -3,14 +3,9 @@ version: 2.1
 jobs:
   react-native-android-setup:
     docker:
-      - image: reactnativecommunity/react-native-android:latest # Docker image for the job
+      - image: reactnativecommunity/react-native-android:latest
 
     steps:
-      - setup_remote_docker: # Enables remote Docker for layer caching
-          version: 20.10.16
-      - run:
-          name: Pre-pull Docker Image
-          command: docker pull reactnativecommunity/react-native-android:latest
       - checkout
       - restore_cache:
           name: Restore Yarn Package Cache
@@ -25,6 +20,19 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      - restore_cache:
+          name: Restore Gem Cache
+          keys:
+            - gem-cache-{{ checksum "Gemfile.lock" }}
+            - gem-cache-
+      - run:
+          name: Install Gems
+          command: bundle install --path vendor/bundle
+      - save_cache:
+          name: Save Gem Cache
+          key: gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
 workflows:
   android:
