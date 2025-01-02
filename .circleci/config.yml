@@ -6,6 +6,7 @@ jobs:
       - image: reactnativecommunity/react-native-android:latest
 
     steps:
+      - checkout # Ensure code is checked out before caching steps
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
