@@ -109,6 +109,3 @@ workflows:
   android_ios:
     jobs:
       - react-native-ios-setup
-      - react-native-android-setup:
-          requires:
-            - react-native-ios-setup
