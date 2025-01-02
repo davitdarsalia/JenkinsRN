@@ -10,6 +10,7 @@ jobs:
           name: Restore Yarn Package Cache
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}
+            - yarn-packages-
       - run:
           name: Install Yarn Dependencies
           command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
@@ -18,14 +19,6 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-
-      # - run:
-      #     name: Verify Environment Setup
-      #     command: |
-      #       java -version
-      #       echo "JAVA_HOME is $JAVA_HOME"
-      #       echo "ANDROID_HOME is $ANDROID_HOME"
-      #       sdkmanager --list || echo "SDK tools are ready for use."
 
 workflows:
   android:
