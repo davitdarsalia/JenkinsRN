@@ -6,34 +6,26 @@ jobs:
       - image: reactnativecommunity/react-native-android:latest
 
     steps:
-      - checkout
       - restore_cache:
+          name: Restore Yarn Package Cache
           keys:
-            - yarn-cache-{{ checksum "yarn.lock" }}
-            - yarn-cache-
+            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
-          name: Install Dependencies (Yarn)
-          command: |
-            if [ ! -d "node_modules" ]; then
-              echo "Node modules not found, running yarn install..."
-              yarn install
-            else
-              echo "Node modules found, skipping yarn install."
-            fi
+          name: Install Yarn Dependencies
+          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
       - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
-          key: yarn-cache-{{ checksum "yarn.lock" }}
-      - run:
-          name: Latest commit from Main branch
-          command: git pull && git fetch
-      - run:
-          name: Verify Environment Setup
-          command: |
-            java -version
-            echo "JAVA_HOME is $JAVA_HOME"
-            echo "ANDROID_HOME is $ANDROID_HOME"
-            sdkmanager --list || echo "SDK tools are ready for use."
+            - ~/.cache/yarn
+
+      # - run:
+      #     name: Verify Environment Setup
+      #     command: |
+      #       java -version
+      #       echo "JAVA_HOME is $JAVA_HOME"
+      #       echo "ANDROID_HOME is $ANDROID_HOME"
+      #       sdkmanager --list || echo "SDK tools are ready for use."
 
 workflows:
   android:
