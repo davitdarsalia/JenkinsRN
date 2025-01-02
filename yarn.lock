@@ -2014,6 +2014,22 @@
   resolved "https://registry.npmjs.org/@types/react-native-permissions/-/react-native-permissions-1.1.1.tgz"
   integrity sha512-+xLVH6kefg9hpJKxQhRcaYHckhbQCxDrU6HEaTzf3gMbn4I4aunjxkqeSMAofrHFNOnOS/phnsTbifoDATjk3w==
 
+"@types/react-native-snap-carousel@^3.8.11":
+  version "3.8.11"
+  resolved "https://registry.npmjs.org/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.8.11.tgz"
+  integrity sha512-9VrAJ4PlPCzQCpyQ95vjeR9V4Osbgvfc+tSGhLkt3FDNWWNxwbgUQONFbNQznoPU/Qd69PFVWtabPTgtjZjWPg==
+  dependencies:
+    "@types/react" "*"
+    react-native "*"
+
+"@types/react-native-tab-view@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/@types/react-native-tab-view/-/react-native-tab-view-1.0.6.tgz"
+  integrity sha512-iWZyflFtE2YYCKP8DviZXe1bEH1G9nUeYcG8HCcnqbJYfFmiBTAh/r9akS3y6G9a0QqY6H+ouzKqQ18nM3a0cQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native@*":
   version "0.72.8"
   resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.72.8.tgz"
