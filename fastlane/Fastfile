@@ -1,0 +1,28 @@
+default_platform(:android)
+
+platform :android do
+  desc "Increment versionCode and versionName"
+  lane :increment do
+    increment_version_name(
+      app_project_dir: 'android/app',
+      bump_type: 'minor'
+    )
+    increment_version_code(
+      app_project_dir: 'android/app'
+    )
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(
+      task: "test",
+      project_dir: "android"
+    )
+  end
+
+  desc "Increment version, run tests, and build beta"
+  lane :betaAndroid do
+    increment
+    test
+  end
+end

@@ -5,7 +5,13 @@ jobs:
     docker:
       - image: reactnativecommunity/react-native-android:latest
 
+    environment:
+      YARN_CACHE_KEY: yarn-packages-{{ checksum "yarn.lock" }}
+      GEM_CACHE_KEY: gem-cache-{{ checksum "Gemfile.lock" }}
+      GRADLE_CACHE_KEY: gradle-cache-{{ checksum "android/build.gradle" }}
+
     steps:
+      - checkout
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
@@ -19,6 +25,48 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      - restore_cache:
+          name: Restore Gem Cache
+          keys:
+            - gem-cache-{{ checksum "Gemfile.lock" }}
+            - gem-cache-
+      - run:
+          name: Install Gems
+          command: bundle install --path vendor/bundle
+      - save_cache:
+          name: Save Gem Cache
+          key: gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Run Unit Tests
+          command: |
+            mkdir -p test-reports
+            yarn test --outputFile=test-reports/test-results.json --json
+      - store_artifacts:
+          name: Save Test Report
+          path: test-reports/test-results.json
+      - restore_cache:
+          name: Restore Gradle Cache
+          keys:
+            - gradle-cache-{{ checksum "android/build.gradle" }}
+            - gradle-cache-
+      - run:
+          name: Resolve Gradle Dependencies
+          command: cd android && ./gradlew dependencies
+      - save_cache:
+          name: Save Gradle Cache
+          key: gradle-cache-{{ checksum "android/build.gradle" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+      - run:
+          name: Assemble Debug APK
+          command: bundle exec fastlane android betaAndroid
+      - store_artifacts:
+          name: Save Debug APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          destination: debug-apk
 
 workflows:
   android:
