@@ -34,6 +34,17 @@ jobs:
             else
               echo "Android SDK command line tools already installed."
             fi
+      - run:
+          name: Set ENV variables
+          command: |
+            export ANDROID_HOME="$HOME/android-sdk"
+             export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+             echo 'export ANDROID_HOME="$HOME/android-sdk"' >> $BASH_ENV
+             echo 'export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"' >> $BASH_ENV
+
+            echo "ANDROID_HOME is set to $ANDROID_HOME"
+            echo "PATH includes Android SDK tools"
+            sdkmanager --list || echo "SDK tools not yet initialized, but environment is set up."
 
 workflows:
   android:
