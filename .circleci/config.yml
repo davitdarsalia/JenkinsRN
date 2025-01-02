@@ -3,18 +3,14 @@ version: 2.1
 executors:
   ios-executor:
     macos:
-      xcode: 16.0.0
+      xcode: '16.0.0'
 
-jobs:
-  react-native-android-setup:
+  android-executor:
     docker:
       - image: reactnativecommunity/react-native-android:latest
 
-    environment:
-      YARN_CACHE_KEY: yarn-packages-{{ checksum "yarn.lock" }}
-      GEM_CACHE_KEY: gem-cache-{{ checksum "Gemfile.lock" }}
-      GRADLE_CACHE_KEY: gradle-cache-{{ checksum "android/build.gradle" }}
-
+commands:
+  setup-environment:
     steps:
       - checkout
       - restore_cache:
@@ -43,6 +39,12 @@ jobs:
           key: gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+
+jobs:
+  react-native-android-setup:
+    executor: android-executor
+    steps:
+      - setup-environment
       - run:
           name: Run Unit Tests
           command: |
@@ -82,43 +84,8 @@ jobs:
 
   react-native-ios-setup:
     executor: ios-executor
-
-    environment:
-      YARN_CACHE_KEY: yarn-packages-{{ checksum "yarn.lock" }}
-      GEM_CACHE_KEY: gem-cache-{{ checksum "Gemfile.lock" }}
-
     steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-            - yarn-packages-
-      - run:
-          name: Install Yarn Dependencies
-          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - restore_cache:
-          name: Restore Gem Cache
-          keys:
-            - gem-cache-{{ checksum "Gemfile.lock" }}
-            - gem-cache-
-      - run:
-          name: Ensure Correct Bundler Version
-          command: |
-            gem install bundler --no-document -v 2.4.10
-      - run:
-          name: Install Gems
-          command: bundle install --path vendor/bundle
-      - save_cache:
-          name: Save Gem Cache
-          key: gem-cache-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+      - setup-environment
       - run:
           name: Install CocoaPods Dependencies
           command: |
@@ -132,5 +99,7 @@ jobs:
 workflows:
   android_ios:
     jobs:
-      # - react-native-android-setup
       - react-native-ios-setup
+      - react-native-android-setup:
+          requires:
+            - react-native-ios-setup
