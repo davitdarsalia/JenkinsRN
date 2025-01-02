@@ -49,14 +49,14 @@ jobs:
       - restore_cache:
           name: Restore Gradle Cache
           keys:
-            - gradle-cache-{{ checksum "build.gradle" }}
-            - gradle-cache
+            - gradle-cache-{{ checksum "android/build.gradle" }}
+            - gradle-cache-
       - run:
           name: Resolve Gradle Dependencies
           command: cd android && ./gradlew dependencies
       - save_cache:
           name: Save Gradle Cache
-          key: gradle-cache-{{ checksum "build.gradle" }}
+          key: gradle-cache-{{ checksum "android/build.gradle" }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
