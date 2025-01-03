@@ -23,13 +23,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Increment versionCode and versionName
 
-### android test
+### android debugAPK
 
 ```sh
-[bundle exec] fastlane android test
+[bundle exec] fastlane android debugAPK
 ```
 
 Runs all the tests
+
+### android releaseAPK
+
+```sh
+[bundle exec] fastlane android releaseAPK
+```
+
+
+
+### android releaseAAB
+
+```sh
+[bundle exec] fastlane android releaseAAB
+```
+
+
 
 ### android betaAndroid
 
@@ -37,7 +53,23 @@ Runs all the tests
 [bundle exec] fastlane android betaAndroid
 ```
 
-Increment version, run tests, and build beta
+
+
+### android releaseAndroid
+
+```sh
+[bundle exec] fastlane android releaseAndroid
+```
+
+
+
+### android releaseStore
+
+```sh
+[bundle exec] fastlane android releaseStore
+```
+
+
 
 ----
 
