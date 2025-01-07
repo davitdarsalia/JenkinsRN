@@ -51,10 +51,11 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
+          bundler-cache: true
 
       - name: Setup Fastlane
         run: bundle install
 
       - name: Build Android APK
         run: |
-          fastlane betaAndroid
+          bundle exec fastlane betaAndroid
