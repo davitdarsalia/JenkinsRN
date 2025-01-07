@@ -36,12 +36,22 @@ jobs:
           corepack prepare yarn@4.6.0 --activate
 
       - name: Cache Yarn Dependencies
+        id: cache-yarn
         uses: actions/cache@v3
+        env:
+          cache-name: cache-yarn-dependencies
         with:
           path: ./yarn/cache
-          key: yarn-cache-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            yarn-cache-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-yarn.outputs.cache-hit != 'true' }}
+        name: Lists the state of yarn cache
+        continue-on-error: false
+        run: yarn list
 
       - name: Install Yarn Dependencies
         run: yarn install
