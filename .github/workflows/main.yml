@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 23.x
+          cache: 'yarn'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
@@ -36,22 +37,12 @@ jobs:
           corepack prepare yarn@4.6.0 --activate
 
       - name: Cache Yarn Dependencies
-        id: cache-yarn
         uses: actions/cache@v3
-        env:
-          cache-name: cache-yarn-dependencies
         with:
           path: ./yarn/cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: yarn-cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-yarn.outputs.cache-hit != 'true' }}
-        name: Lists the state of yarn cache
-        continue-on-error: false
-        run: yarn list
+            yarn-cache-
 
       - name: Install Yarn Dependencies
         run: yarn install
@@ -61,9 +52,9 @@ jobs:
         with:
           ruby-version: '2.7'
 
-      - name: Setup Fastlane
-        run: bundle install
+      # - name: Setup Fastlane
+      #   run: bundle install
 
-      - name: Build Android APK
-        run: |
-          fastlane betaAndroid
+      # - name: Build Android APK
+      #   run: |
+      #     fastlane betaAndroid
