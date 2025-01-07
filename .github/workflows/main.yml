@@ -27,5 +27,13 @@ jobs:
         with:
           node-version: 23.x
 
+      - name: Enable Corepack and Set Yarn Version
+        run: |
+          corepack enable
+          corepack prepare yarn@4.6.0 --activate
+
       - name: Install Yarn Dependencies
         run: yarn install
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
