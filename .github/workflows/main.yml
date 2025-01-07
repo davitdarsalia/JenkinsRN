@@ -44,7 +44,7 @@ jobs:
           ruby-version: '2.7'
 
       - name: Setup Fastlane
-        uses: tashi-iu/setup-fastlane@v1
+        run: bundle install
 
       - name: Build Android APK
         run: |
