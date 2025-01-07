@@ -38,8 +38,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Install Ruby Gems
-        run: bundle install
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+
+      - name: Setup Fastlane
+        uses: tashi-iu/setup-fastlane@v1
 
       - name: Build Android APK
         run: |
