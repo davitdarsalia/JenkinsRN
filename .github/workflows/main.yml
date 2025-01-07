@@ -27,6 +27,9 @@ jobs:
         with:
           node-version: 23.x
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
       - name: Enable Corepack and Set Yarn Version
         run: |
           corepack enable
@@ -43,9 +46,6 @@ jobs:
       - name: Install Yarn Dependencies
         run: yarn install
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -56,5 +56,4 @@ jobs:
 
       - name: Build Android APK
         run: |
-          cd android
-          ./gradlew assembleRelease
+          fastlane betaAndroid
