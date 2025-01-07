@@ -75,3 +75,9 @@ jobs:
       - name: Build Android APK
         run: |
           bundle exec fastlane betaAndroid
+
+      - name: Upload APK Release
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} -  App Release APK generated
+          path: android/app/build/outputs/bundle/release
