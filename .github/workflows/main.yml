@@ -37,3 +37,11 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+
+      - name: Install Ruby Gems
+        run: bundle install
+
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
