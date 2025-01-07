@@ -22,6 +22,11 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Enable Corepack and Set Yarn Version
+        run: |
+          corepack enable
+          corepack prepare yarn@4.6.0 --activate
+
       - name: Setup Node.Js
         uses: actions/setup-node@v3
         with:
@@ -30,11 +35,6 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-
-      - name: Enable Corepack and Set Yarn Version
-        run: |
-          corepack enable
-          corepack prepare yarn@4.6.0 --activate
 
       - name: Cache Yarn Dependencies
         uses: actions/cache@v3
