@@ -1,0 +1,16 @@
+name: Build Android App
+
+env:
+  main_project_module: ReactNativeCI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
