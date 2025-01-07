@@ -11,6 +11,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Set current date as env variable
+        run: echo "date_today=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')"
