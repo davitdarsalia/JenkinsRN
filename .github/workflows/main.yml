@@ -93,6 +93,12 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" | base64 --decode > android/app/my-upload-key.keystore
 
+      - name: Verify Keystore
+        run: |
+          keytool -list -v -keystore android/app/my-upload-key.keystore -storepass "${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}"
+        env:
+          JAVA_OPTS: '-Dfile.encoding=UTF-8'
+
       - name: Build Android APK with Fastlane
         env:
           PRODUCTION_KEY_STORE_FILE: android/app/my-upload-key.keystore
