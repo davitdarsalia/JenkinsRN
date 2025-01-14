@@ -12,18 +12,16 @@ platform :android do
     )
   end
 
-  desc "Runs all the tests"
-  lane :debugAPK do
-    gradle(
-      task: "test",
-      project_dir: "android"
-    )
-  end
-
   lane :releaseAPK do
     gradle(
       task: "release",
-      project_dir: "android"
+      project_dir: "./android",
+      properties: {
+        "android.injected.signing.store.file" => ENV['PRODUCTION_KEY_STORE_FILE'],
+        "android.injected.signing.store.password" => ENV['PRODUCTION_KEY_STORE_PASSWORD'],
+        "android.injected.signing.key.alias" => ENV['PRODUCTION_KEY_KEY_ALIAS'],
+        "android.injected.signing.key.password" => ENV['PRODUCTION_KEY_KEY_PASSWORD'],
+      }
     )
   end
 
@@ -34,11 +32,29 @@ platform :android do
     )
   end
 
-  lane :betaAndroid do
+  lane :betaAndroid do |options|
     increment
-    debugAPK
     releaseAPK
     releaseAAB
+
+   
+    local =  options.fetch(:local, true)
+
+    if local
+    require 'fileutils'
+
+    output_dir = '../test-builds/android'
+
+    aab_path = '../android/app/build/outputs/bundle/release/app-release.aab'
+    apk_path = '../android/app/build/outputs/apk/release/app-release.apk'
+
+    FileUtils.mkdir_p(output_dir)
+
+    FileUtils.cp(aab_path, output_dir)
+    FileUtils.cp(apk_path, output_dir)
+    end
+
+    UI.message("AAB and APK build completed successfully.")
   end
 
   lane :releaseAndroid do
