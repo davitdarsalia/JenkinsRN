@@ -46,6 +46,7 @@ jobs:
           cache: 'yarn'
 
       - name: Setup Android SDK
+        if: steps.cache-android-sdk.outputs.cache-hit != 'true'
         uses: android-actions/setup-android@v2
 
       - name: Enable Corepack and Set Yarn Version
