@@ -16,6 +16,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Cache Android SDK
+        id: cache-android-sdk
+        uses: actions/cache@v3
+        with:
+          path: ~/.android
+          key: android-sdk-${{ runner.os }}-${{ hashFiles('**/build.gradle', '**/build.gradle.kts') }}
+          restore-keys: |
+            android-sdk-${{ runner.os }}-
+
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
