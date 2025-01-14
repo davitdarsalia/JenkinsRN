@@ -9,9 +9,11 @@ on:
       - main
 
 jobs:
-  build:
+  # Job to download and cache dependencies
+  dependencies:
     runs-on: ubuntu-latest
-
+    outputs:
+      cache-hit: ${{ steps.cache-dependencies.outputs.cache-hit }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -37,6 +39,7 @@ jobs:
           corepack prepare yarn@4.6.0 --activate
 
       - name: Cache Yarn Dependencies
+        id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: ./yarn/cache
@@ -72,6 +75,13 @@ jobs:
           bundle config set path 'vendor/bundle'
           bundle install --jobs 4 --retry 3
 
+  build-android:
+    needs: dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
       - name: Build Android APK
         run: |
           bundle exec fastlane betaAndroid
@@ -79,5 +89,5 @@ jobs:
       - name: Upload APK Release
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} -  App Release APK generated
+          name: App Release APK
           path: android/app/build/outputs/bundle/release/*.apk
