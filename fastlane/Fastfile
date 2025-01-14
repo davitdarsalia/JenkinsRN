@@ -37,6 +37,8 @@ platform :android do
   lane :betaAndroid do
     increment
     debugAPK
+    releaseAPK
+    releaseAAB
   end
 
   lane :releaseAndroid do
