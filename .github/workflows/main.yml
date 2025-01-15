@@ -91,20 +91,7 @@ jobs:
       #     bundle install --jobs 4 --retry 3
 
       - name: Decode Keystore
-        run: echo ${{ secrets.PRODUCTION_KEY_STORE_FILE }} | base64 --decode > /tmp/my-upload-key.keystore
-        env:
-          SECRET: ${{ secrets.PRODUCTION_KEY_STORE_FILE }}
-
-      - name: Debug Secret Length
-        run: |
-          if [ -z "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" ]; then
-            echo "Secret PRODUCTION_KEY_STORE_FILE is empty!"
-            exit 1
-          else
-            echo "Length of PRODUCTION_KEY_STORE_FILE: ${#SECRET}"
-          fi
-        env:
-          SECRET: ${{ secrets.PRODUCTION_KEY_STORE_FILE }}
+        run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE }}"" | base64 --decode > /tmp/my-upload-key.keystore
 
       - name: Verify Decoded Keystore
         run: |
