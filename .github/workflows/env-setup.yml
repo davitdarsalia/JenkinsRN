@@ -1,15 +1,13 @@
-name: Build Android App
-
-env:
-  main_project_module: ReactNativeCI
+name: Environment Setup
 
 on:
+  workflow_dispatch: # Allows manual triggering
   push:
     branches:
       - main
 
 jobs:
-  build:
+  setup-env:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +22,7 @@ jobs:
           key: android-sdk-${{ runner.os }}-${{ hashFiles('**/build.gradle', '**/build.gradle.kts') }}
           restore-keys: |
             android-sdk-${{ runner.os }}-
+
       - name: Cache Gradle
         uses: actions/cache@v3
         with:
@@ -31,36 +30,46 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/*.kts') }}
           restore-keys: |
             gradle-${{ runner.os }}-
+
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
-      - name: Setup Node.Js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 23.x
           cache: 'yarn'
+
       - name: Setup Android SDK
         if: steps.cache-android-sdk.outputs.cache-hit != 'true'
         uses: android-actions/setup-android@v2
+
       - name: Enable Corepack and Set Yarn Version
         run: |
           corepack enable
           corepack prepare yarn@4.6.0 --activate
+
       - name: Cache Yarn Dependencies
         uses: actions/cache@v3
         with:
-          path: ./yarn/cache
+          path: |
+            node_modules
+            ~/.yarn/cache
           key: yarn-cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-cache-
+
       - name: Install Yarn Dependencies
         run: yarn install
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
+
       - name: Cache Ruby Gems
         id: gems-cache
         uses: actions/cache@v3
@@ -69,37 +78,25 @@ jobs:
           key: gems-cache-${{ runner.os }}-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             gems-cache-${{ runner.os }}-
+
       - name: Install Bundle Dependencies
         if: steps.gems-cache.outputs.cache-hit != 'true'
         run: |
           bundle config set path 'vendor/bundle'
           bundle install --jobs 4 --retry 3
+
       - name: Setup Fastlane
         run: |
           bundle config set path 'vendor/bundle'
           bundle install --jobs 4 --retry 3
-      - name: Decode Keystore
-        run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" | base64 --decode > /tmp/my-upload-key.keystore
 
-      - name: Verify Decoded Keystore
-        run: |
-          keytool -list -v -keystore /tmp/my-upload-key.keystore -storepass "${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}"
-        env:
-          JAVA_OPTS: '-Dfile.encoding=UTF-8'
-
-      - name: Build Android APK with Fastlane
-        env:
-          PRODUCTION_KEY_STORE_FILE: /tmp/my-upload-key.keystore
-          PRODUCTION_KEY_STORE_PASSWORD: ${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}
-          PRODUCTION_KEY_KEY_ALIAS: ${{ secrets.PRODUCTION_KEY_KEY_ALIAS }}
-          PRODUCTION_KEY_KEY_PASSWORD: ${{ secrets.PRODUCTION_KEY_KEY_PASSWORD }}
-        run: |
-          bundle exec fastlane betaAndroid local:false
-
-      - name: Upload APK Release
+      - name: Save Environment
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} -  App Release Artifacts - Release APK && AAB
+          name: android-env-cache
           path: |
-            android/app/build/outputs/apk/release/app-release.apk
-            android/app/build/outputs/bundle/release/app-release.aab
+            ~/.android
+            ~/.gradle/caches
+            node_modules
+            ~/.yarn/cache
+            vendor/bundle
