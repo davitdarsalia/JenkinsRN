@@ -93,6 +93,17 @@ jobs:
       - name: Decode Keystore
         run: echo ${#${{ secrets.PRODUCTION_KEY_STORE_FILE }}} | base64 --decode > /tmp/my-upload-key.keystore
 
+      - name: Debug Secret Length
+        run: |
+          if [ -z "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" ]; then
+            echo "Secret PRODUCTION_KEY_STORE_FILE is empty!"
+            exit 1
+          else
+            echo "Length of PRODUCTION_KEY_STORE_FILE: ${#SECRET}"
+          fi
+        env:
+          SECRET: ${{ secrets.PRODUCTION_KEY_STORE_FILE }}
+
       - name: Verify Decoded Keystore
         run: |
           keytool -list -v -keystore /tmp/my-upload-key.keystore -storepass "${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}"
