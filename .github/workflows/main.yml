@@ -91,7 +91,7 @@ jobs:
       #     bundle install --jobs 4 --retry 3
 
       - name: Decode Keystore
-        run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE}}" | base64 --decode > /tmp/my-upload-key.keystore
+        run: echo ${#${{ secrets.PRODUCTION_KEY_STORE_FILE }}} | base64 --decode > /tmp/my-upload-key.keystore
 
       - name: Verify Decoded Keystore
         run: |
