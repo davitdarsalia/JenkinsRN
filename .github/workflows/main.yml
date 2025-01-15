@@ -99,5 +99,7 @@ jobs:
       - name: Upload APK Release
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} -  App Release APK generated
-          path: android/app/build/outputs/bundle/release/*.apk
+          name: ${{ env.date_today }} -  App Release Artifacts - Release APK && AAB
+          path: |
+            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/bundle/release/app-release.aab

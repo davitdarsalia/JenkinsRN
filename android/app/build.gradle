@@ -23,8 +23,8 @@ android {
         applicationId "com.jenkinssample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "1.11.0"
+        versionCode 15
+        versionName "1.14.0"
     }
     signingConfigs {
         debug {
