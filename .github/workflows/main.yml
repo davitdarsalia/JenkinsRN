@@ -79,7 +79,7 @@ jobs:
       #     bundle config set path 'vendor/bundle'
       #     bundle install --jobs 4 --retry 3
       - name: Decode Keystore
-        run: echo "${{ secrets.PRODUCTION_KEY_KEY_ALIAS }}""
+        run: echo ${{ secrets.PRODUCTION_KEY_KEY_ALIAS }}
         # | base64 --decode > /tmp/my-upload-key.keystore
 
       - name: Verify Decoded Keystore
