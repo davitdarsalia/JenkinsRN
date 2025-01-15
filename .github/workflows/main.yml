@@ -91,17 +91,17 @@ jobs:
       #     bundle install --jobs 4 --retry 3
 
       - name: Decode Keystore
-        run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" | base64 --decode > android/app/my-upload-key.keystore
+        run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE}}" | base64 --decode > /tmp/my-upload-key.keystore
 
       - name: Verify Decoded Keystore
         run: |
-          keytool -list -v -keystore android/app/my-upload-key.keystore -storepass "${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}"
+          keytool -list -v -keystore /tmp/my-upload-key.keystore -storepass "${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}"
         env:
           JAVA_OPTS: '-Dfile.encoding=UTF-8'
 
       - name: Build Android APK with Fastlane
         env:
-          PRODUCTION_KEY_STORE_FILE: android/app/my-upload-key.keystore
+          PRODUCTION_KEY_STORE_FILE: /tmp/my-upload-key.keystore
           PRODUCTION_KEY_STORE_PASSWORD: ${{ secrets.PRODUCTION_KEY_STORE_PASSWORD }}
           PRODUCTION_KEY_KEY_ALIAS: ${{ secrets.PRODUCTION_KEY_KEY_ALIAS }}
           PRODUCTION_KEY_KEY_PASSWORD: ${{ secrets.PRODUCTION_KEY_KEY_PASSWORD }}
