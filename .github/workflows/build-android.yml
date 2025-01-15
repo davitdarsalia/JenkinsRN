@@ -2,9 +2,6 @@ name: Build Android App
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   build-android:
@@ -17,7 +14,7 @@ jobs:
       - name: Restore Environment
         uses: actions/download-artifact@v3
         with:
-          name: android-env-cache
+          name: android-env-artifact
 
       - name: Decode Keystore
         run: echo "${{ secrets.PRODUCTION_KEY_STORE_FILE }}" | base64 --decode > /tmp/my-upload-key.keystore
@@ -40,7 +37,7 @@ jobs:
       - name: Upload APK Release
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} -  App Release Artifacts - Release APK && AAB
+          name: ${{ github.run_id }} - App Release Artifacts - Release APK & AAB
           path: |
             android/app/build/outputs/apk/release/app-release.apk
             android/app/build/outputs/bundle/release/app-release.aab
