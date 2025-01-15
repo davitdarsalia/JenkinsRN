@@ -92,6 +92,8 @@ jobs:
 
       - name: Decode Keystore
         run: echo ${{ secrets.PRODUCTION_KEY_STORE_FILE }} | base64 --decode > /tmp/my-upload-key.keystore
+        env:
+          SECRET: ${{ secrets.PRODUCTION_KEY_STORE_FILE }}
 
       - name: Debug Secret Length
         run: |
