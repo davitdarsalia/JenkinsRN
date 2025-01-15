@@ -77,3 +77,6 @@ yarn-error.log
 # Env
 .env
 .env.*
+
+# Test-Builds generated directory
+/test-builds/*
