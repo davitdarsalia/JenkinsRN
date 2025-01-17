@@ -140,3 +140,33 @@ jobs:
 
       - name: Install Yarn Dependencies
         run: yarn install
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+
+      - name: Cache Ruby Gems
+        id: gems-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: gems-cache-${{ runner.os }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            gems-cache-${{ runner.os }}-
+
+      - name: Install Ruby Dependencies
+        if: steps.gems-cache.outputs.cache-hit != 'true'
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
+
+      - name: Setup Fastlane
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
+
+      - name: Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod install --verbose
